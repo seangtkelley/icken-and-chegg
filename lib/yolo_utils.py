@@ -13,16 +13,16 @@ def convert_numpy_annots_to_yolo(annotations_dir, map_images_dir, annots_file_ou
             - annots_file_output_path: Path to where file containing annotations will be saved
     """
 
-    anots_file_contents = ''
+    annots_file_contents = ''
     for filepath in glob.glob(annotations_dir+'D*'):
         filename = filepath.split('/')[-1]
         head,sep,tail = filename.partition('.')
         head = head.replace('D', '')
 
-        anot_filename = annotations_dir+'D'+head+'.npy'
-        anot_line = map_images_dir + 'D'+head+'.tiff'
+        annot_filename = annotations_dir+'D'+head+'.npy'
+        annot_line = map_images_dir + 'D'+head+'.tiff'
         
-        A = np.load(anot_filename).item()
+        A = np.load(annot_filename).item()
 
         # the following code shows how to loop through all the items in the numpy dictionary.
         # each dictionary can have at most 3 keys: vertices, name and link_to.
@@ -38,12 +38,12 @@ def convert_numpy_annots_to_yolo(annotations_dir, map_images_dir, annots_file_ou
             y_max = np.max(vertices[:, 1])
 
             # add annotation to line
-            anot_line += " " + ",".join([str(int(x_min)), str(int(y_min)), str(int(x_max)), str(int(y_max)), "0"])
+            annot_line += " " + ",".join([str(int(x_min)), str(int(y_min)), str(int(x_max)), str(int(y_max)), "0"])
             
-        anots_file_contents += anot_line + "\n"
+        annots_file_contents += annot_line + "\n"
 
     with open(annots_file_output_path, "w") as text_file:
-        text_file.write(anots_file_contents)
+        text_file.write(annots_file_contents)
 
 
 def train_val_test_split(original_bb_file_path, train_split_file, val_split_file, test_split_file, train_annots_output, val_annots_output, test_annots_output):
@@ -104,6 +104,7 @@ def generate_sliding_windows(original_bb_file_path, annots_file_output_path, ima
     with open(original_bb_file_path) as f:
         original_lines = f.readlines()
 
+    annots_file_contents = ''
     for line in original_lines:
         line = line.split()
         file_path = line[0]
@@ -117,7 +118,7 @@ def generate_sliding_windows(original_bb_file_path, annots_file_output_path, ima
         )
 
         crop_window_count = 0
-        anots_file_contents = ''
+        
         ## begin window sliding
         for height in range(0, orig_img_height, crop_height):
             for width in range(0, orig_img_width, crop_width):
@@ -130,7 +131,7 @@ def generate_sliding_windows(original_bb_file_path, annots_file_output_path, ima
                     window = image.crop(crop_area)
                     window.save(os.path.join(image_save_dir, new_name))
                 
-                anot_line = os.path.join(image_save_dir, new_name)
+                annot_line = os.path.join(image_save_dir, new_name)
                 
                 boxes_for_window = np.zeros((max_boxes_per_window, 5))
                 if len(bounding_box_list) > 0:
@@ -140,11 +141,11 @@ def generate_sliding_windows(original_bb_file_path, annots_file_output_path, ima
                             adjusted_bounding_box = [bounding_box[0] - width, bounding_box[1] - height, bounding_box[2] - width, bounding_box[3] - height, 0]
                             boxes_for_window[boxes_added] = adjusted_bounding_box
                             boxes_added += 1
-                            anot_line += " " + ",".join(list(map(str, adjusted_bounding_box)))
+                            annot_line += " " + ",".join(list(map(str, adjusted_bounding_box)))
 
                 if boxes_added > 0:
-                    anots_file_contents += anot_line + "\n"
+                    annots_file_contents += annot_line + "\n"
                 crop_window_count += 1
     
     with open(annots_file_output_path, "w") as text_file:
-        text_file.write(anots_file_contents)
+        text_file.write(annots_file_contents)
