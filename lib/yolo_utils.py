@@ -107,6 +107,8 @@ def generate_sliding_windows(original_bb_file_path, annots_file_output_path, ima
     annots_file_contents = ''
     for line in original_lines:
         line = line.split()
+        if len(line) < 2: # sanity check
+            continue
         file_path = line[0]
         image = Image.open(file_path)
         orig_img_height, orig_img_width = image.size
