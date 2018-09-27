@@ -14,13 +14,13 @@ def convert_numpy_annots_to_yolo(annotations_dir, map_images_dir, annots_file_ou
     """
 
     annots_file_contents = ''
-    for filepath in glob.glob(annotations_dir+'D*'):
+    for filepath in glob.glob(os.path.join(annotations_dir, 'D*')):
         filename = filepath.split('/')[-1]
         head,sep,tail = filename.partition('.')
         head = head.replace('D', '')
 
-        annot_filename = annotations_dir+'D'+head+'.npy'
-        annot_line = map_images_dir + 'D'+head+'.tiff'
+        annot_filename = os.path.join(annotations_dir, 'D'+head+'.npy')
+        annot_line = os.path.join(map_images_dir, 'D'+head+'.tiff')
         
         A = np.load(annot_filename).item()
 
