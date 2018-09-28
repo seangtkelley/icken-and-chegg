@@ -3,8 +3,8 @@ import os
 from PIL import Image
 import glob
 
-import general_utils
-import xue_et_al
+from lib import general_utils
+from lib import xue_et_al
 
 def convert_numpy_annots_to_yolo(annotations_dir, map_images_dir, annots_file_output_path):
     """
