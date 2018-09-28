@@ -118,11 +118,11 @@ def train_val_test_split(original_bb_file_path, train_split_file, val_split_file
         head,sep,tail = filename.partition('.')
         
         if head in train_filenames:
-            train_content += line + "\n"
+            train_content += line
         elif head in val_filenames:
-            val_content += line + "\n"
+            val_content += line
         elif head in test_filenames:
-            test_content += line + "\n"
+            test_content += line
             
     with open(train_annots_output, "w") as text_file:
         text_file.write(train_content)
