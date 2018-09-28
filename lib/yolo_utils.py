@@ -4,6 +4,7 @@ from PIL import Image
 import glob
 
 import general_utils
+import xue_et_al
 
 def convert_numpy_annots_to_yolo(annotations_dir, map_images_dir, annots_file_output_path):
     """
@@ -42,6 +43,49 @@ def convert_numpy_annots_to_yolo(annotations_dir, map_images_dir, annots_file_ou
             
         annots_file_contents += annot_line + "\n"
 
+    with open(annots_file_output_path, "w") as text_file:
+        text_file.write(annots_file_contents)
+
+
+def create_inpainted_images(original_bb_file_path, annots_file_output_path, image_save_dir, sample_num, save_image=True):
+    """
+        Inputs:
+            - original_bb_file_path: Path to original annotations
+            - annots_file_output_path: Path to where file containing annotations will be saved
+            - sample_num: Amount of times to sample image for inpainting
+            - image_save_dir: Directory where inpainted images will be saved/located
+            - save_image: To save local copy of image or not
+    """
+    with open(original_bb_file_path) as f:
+        original_lines = f.readlines()
+
+    annots_file_contents = ''
+    for line in original_lines:
+        line = line.split()
+        if len(line) < 2: # sanity check
+            continue
+        file_path = line[0]
+        image = Image.open(file_path)
+        bounding_box_list = np.array(
+            [np.array(
+                list(map(int,box.split(',')))
+            ) for box in line[1:]]
+        )
+        
+        for i in range(sample_num):
+            inpainted_image = xue_et_al.inpaint(image, bounding_box_list)
+            
+            image_name = line[0].split('/')[-1].split('.')[0]
+            image_ext = line[0].split('/')[-1].split('.')[1]
+            new_name =  image_name + "_inpaint" + str(i) + '.' + image_ext
+
+            if save_image:
+                inpainted_image.save(os.path.join(image_save_dir, new_name))
+            
+            annot_line = os.path.join(image_save_dir, new_name)
+
+            annots_file_contents += annot_line + "\n"
+    
     with open(annots_file_output_path, "w") as text_file:
         text_file.write(annots_file_contents)
 
@@ -93,9 +137,9 @@ def train_val_test_split(original_bb_file_path, train_split_file, val_split_file
 def generate_sliding_windows(original_bb_file_path, annots_file_output_path, image_save_dir, max_boxes_per_window=30, window_size=(608, 608), save_image=True):
     """
         Inputs:
+            - original_bb_file_path: Path to file of unaltered bounding boxes
             - annots_file_output_path: Path to where file containing sliding window annotations will be saved
             - image_save_dir: Directory where sliding windows will be saved/located
-            - original_bb_file_path: Path to file of unaltered bounding boxes
             - max_boxes_per_window: Maximum number of bounding boxes within window
             - window_size: How large the windows should be
             - save_image: To save local copy of cropped window or not
@@ -128,7 +172,7 @@ def generate_sliding_windows(original_bb_file_path, annots_file_output_path, ima
                 
                 image_name = line[0].split('/')[-1].split('.')[0]
                 image_ext = line[0].split('/')[-1].split('.')[1]
-                new_name =  image_name + "_" + str(crop_window_count) + '.' + image_ext
+                new_name =  image_name + "_window" + str(crop_window_count) + '.' + image_ext
                 if save_image:
                     window = image.crop(crop_area)
                     window.save(os.path.join(image_save_dir, new_name))
