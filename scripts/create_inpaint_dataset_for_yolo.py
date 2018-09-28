@@ -19,7 +19,8 @@ yolo_utils.create_inpainted_images(
     os.path.join(home_dir, 'config', 'yolo_annotations.txt'),
     os.path.join(home_dir, 'config', 'inpainted_annotations.txt'),
     os.path.join(home_dir, 'data', 'maps', 'inpainted'),
-    5
+    5,
+    save_image=False
 )
 
 # split annotations

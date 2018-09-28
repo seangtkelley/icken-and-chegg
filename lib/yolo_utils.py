@@ -83,6 +83,7 @@ def create_inpainted_images(original_bb_file_path, annots_file_output_path, imag
                 cv.imwrite(os.path.join(image_save_dir, new_name), inpainted_image)
             
             annot_line = os.path.join(image_save_dir, new_name)
+            annot_line += " " + " ".join(line[1:])
 
             annots_file_contents += annot_line + "\n"
     
