@@ -1,6 +1,7 @@
 import numpy as np
 import os
 from PIL import Image
+import cv2 as cv
 import glob
 
 from lib import general_utils
@@ -65,7 +66,7 @@ def create_inpainted_images(original_bb_file_path, annots_file_output_path, imag
         if len(line) < 2: # sanity check
             continue
         file_path = line[0]
-        image = Image.open(file_path)
+        image = cv.imread(file_path)
         bounding_box_list = np.array(
             [np.array(
                 list(map(int,box.split(',')))
@@ -73,14 +74,13 @@ def create_inpainted_images(original_bb_file_path, annots_file_output_path, imag
         )
         
         for i in range(sample_num):
-            inpainted_image = xue_et_al.inpaint(image, bounding_box_list)
-            
             image_name = line[0].split('/')[-1].split('.')[0]
             image_ext = line[0].split('/')[-1].split('.')[1]
             new_name =  image_name + "_inpaint" + str(i) + '.' + image_ext
 
             if save_image:
-                inpainted_image.save(os.path.join(image_save_dir, new_name))
+                inpainted_image = xue_et_al.inpaint(image, bounding_box_list)
+                cv.imwrite(os.path.join(image_save_dir, new_name), inpainted_image)
             
             annot_line = os.path.join(image_save_dir, new_name)
 
