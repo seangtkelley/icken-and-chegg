@@ -1,11 +1,9 @@
 import sys
 import os
 
+from .lib import yolo_utils
+
 home_dir = os.path.expanduser("~")
-
-sys.path.append(os.path.join(home_dir, 'icken-and-chegg/'))
-
-from lib import yolo_utils
 
 # convert numpy annotations to yolo format
 yolo_utils.convert_numpy_annots_to_yolo(
@@ -19,8 +17,7 @@ yolo_utils.create_inpainted_images(
     os.path.join(home_dir, 'config', 'yolo_annotations.txt'),
     os.path.join(home_dir, 'config', 'inpainted_annotations.txt'),
     os.path.join(home_dir, 'data', 'maps', 'inpainted'),
-    5,
-    save_image=False
+    5
 )
 
 # split annotations
