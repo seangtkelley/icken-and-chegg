@@ -107,4 +107,4 @@ for line in lines:
         "Precision:", precision, "\n",
         "Recall:", recall)
         
-    image.save('first_train_example_detections_with_gt.tiff')
+    #image.save('first_train_example_detections_with_gt.tiff')
