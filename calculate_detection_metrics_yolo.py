@@ -15,12 +15,13 @@ parser.add_argument("--test_annots_path", type=str, default=os.path.join(home_di
 parser.add_argument("--input_size", type=int, default=416, help="Size of one dimension of input images")
 parser.add_argument("--save_image", type=int, default=0, help="Save image or not")
 parser.add_argument("--model_path", type=str, default=os.path.join(home_dir, 'output', 'keras_yolo3', 'baseline_416_09282018', 'trained_weights_final.h5'), help="Path to input weigths for yolo")
-parser.add_argument("--classes", type=str, default=os.path.join(dir_path, 'model_data/custom_classes.txt'), help="Path to file with class names")
-parser.add_argument("--anchors", type=str, default=os.path.join(dir_path, 'model_data/yolo_anchors.txt'), help="Path to yolo anchors file")
+parser.add_argument("--classes", type=str, default=os.path.join(home_dir, 'config', 'word_class.txt'), help="Path to file with class names")
+parser.add_argument("--anchors", type=str, default=os.path.join(dir_path, 'model_data', 'yolo_anchors.txt'), help="Path to yolo anchors file")
 
 args = parser.parse_args()
 
 sys.path.append(os.path.join(home_dir, 'icken-and-chegg'))
+sys.path.append(os.path.join(home_dir))
 
 from lib import general_utils
 from keras_yolo3.yolo import YOLO
