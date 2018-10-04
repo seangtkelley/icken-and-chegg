@@ -17,6 +17,7 @@ parser.add_argument("--save_image", type=int, default=0, help="Save image or not
 parser.add_argument("--model_path", type=str, default=os.path.join(home_dir, 'output', 'keras_yolo3', 'baseline_416_09282018', 'trained_weights_final.h5'), help="Path to input weigths for yolo")
 parser.add_argument("--classes", type=str, default=os.path.join(home_dir, 'config', 'word_class.txt'), help="Path to file with class names")
 parser.add_argument("--anchors", type=str, default=os.path.join(home_dir, 'keras_yolo3', 'model_data', 'yolo_anchors.txt'), help="Path to yolo anchors file")
+parser.add_argument("--iou_thres", type=float, default=0.45, help="IoU Threshold for detection")
 
 args = parser.parse_args()
 
@@ -35,7 +36,8 @@ window_size = (args.input_size, args.input_size)
 detector = YOLO(model_path=args.model_path,
                 anchors_path=args.anchors,
                 classes_path=args.classes,
-                model_image_size=window_size)
+                model_image_size=window_size,
+                iou=args.iou_thres)
 
 
 false_negatives = 0
