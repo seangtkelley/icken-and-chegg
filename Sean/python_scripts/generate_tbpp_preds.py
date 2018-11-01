@@ -32,7 +32,7 @@ preds_output_file = open(preds_output_path, "w+")
 
 crop_h = 512
 crop_w = 512
-step = 100
+step = 400
 
 for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
     image = cv2.imread(filepath)
