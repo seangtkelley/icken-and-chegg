@@ -5,7 +5,7 @@ home_dir = os.path.expanduser("~")
 
 sys.path.append(os.path.join(home_dir, 'icken-and-chegg'))
 
-from lib import yolo_utils
+from ..lib import yolo_utils
 
 # convert numpy annotations to yolo format
 #yolo_utils.convert_numpy_annots_to_yolo(

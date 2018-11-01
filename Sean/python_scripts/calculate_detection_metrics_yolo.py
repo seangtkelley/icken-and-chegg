@@ -24,7 +24,7 @@ args = parser.parse_args()
 sys.path.append(os.path.join(home_dir, 'icken-and-chegg'))
 sys.path.append(os.path.join(home_dir))
 
-from lib import general_utils
+from ..lib import general_utils
 from keras_yolo3.yolo import YOLO
 
 
