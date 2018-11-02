@@ -27,7 +27,7 @@ prior_util = PriorUtil(model)
 
 map_images_dir = os.path.join(home_dir, 'data', 'maps')
 do_preprocess = True
-preds_output_path = os.path.join(home_dir, 'sean', 'output', 'untrained_tbpp_preds.txt')
+preds_output_path = os.path.join(home_dir, 'sean', 'output', 'map_trained_tbpp_preds.txt')
 preds_output_file = open(preds_output_path, "w+")
 
 crop_h = 512
@@ -80,5 +80,7 @@ for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
     preds_output_file.write(filename + "\n")
     
     preds_output_file.write( "\n".join( [" ".join(map(str, bbox)) for bbox in preds] ))
+
+    preds_output_file.write("\n")
     
 preds_output_file.close()
