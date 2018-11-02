@@ -4,6 +4,7 @@ import time
 import os
 import sys
 import pickle
+import cv2
 
 home_dir = os.path.expanduser("~")
 ssd_detectors_dir = os.path.join(home_dir, 'sean', 'ssd_detectors')
@@ -23,6 +24,8 @@ output_dir = os.path.join(home_dir, 'sean', 'output')
 
 train_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'train_files.txt')
 val_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'val_files.txt')
+train_filenames = []
+val_filenames = []
 with open(train_split_file) as f:
     train_filenames = [line.replace("\n", "") for line in f.readlines()]
 
@@ -47,7 +50,7 @@ def read_annots(annots_path, filenames):
                     image_paths.append(temp_path)
                     regions.append(temp_regions)
             
-            temp_path = line
+            temp_path = line.replace("\n", "")
             temp_regions = []
             
         elif len(line.split(" ")) == 4:
@@ -72,17 +75,25 @@ def generate_data(image_paths, regions, batch_size):
         idxs = idxs[:num_batches*batch_size]
         for j, i in enumerate(idxs):
             img = cv2.imread(image_paths[i])
-            y = np.copy(regions[i])
-            y = y/512
+
+            boxes = np.zeros(shape=(4, len(regions[i])))
+            i = 0
+            for box in regions[i]:
+                xmin, ymin, width, height = box
+                xmax, ymax = xmin+width, ymin+height 
+                boxes[:, i] = np.array([xmin/w, ymin/h, xmax/w, ymax/h]).T
+                i += 1
+
+            boxes = np.concatenate([boxes, np.ones([boxes.shape[0],1])], axis=1)
             
             img = cv2.resize(img, (w,h), cv2.INTER_LINEAR)
             img = img.astype(np.float32)
-                
+            
             img -= mean[np.newaxis, np.newaxis, :]
             #img = img / 25.6
             
             inputs.append(img)
-            targets.append(y)
+            targets.append(boxes)
             
             #if len(targets) == batch_size or j == len(idxs)-1: # last batch in epoch can be smaller then batch_size
             if len(targets) == batch_size:
@@ -113,6 +124,9 @@ prior_util = PriorUtil(model)
 train_images, train_regions = read_annots(train_annots_path, train_filenames)
 val_images, val_regions = read_annots(train_annots_path, val_filenames)
 
+print('train image count:', len(train_images))
+print('val image count:', len(val_images))
+
 epochs = 100
 initial_epoch = 0
 
@@ -142,8 +156,8 @@ loss = TBPPFocalLoss()
 model.compile(optimizer=optim, loss=loss.compute, metrics=loss.metrics)
 
 history = model.fit_generator(
-        generate_data(train_images, train_regions, 32),
-        steps_per_epoch=int((len(train_images) // batch_size)/4), 
+        generate_data(train_images, train_regions, batch_size),
+        steps_per_epoch=int((len(train_images) / float(batch_size))//4), 
         epochs=epochs, 
         verbose=1, 
         callbacks=[
@@ -151,8 +165,8 @@ history = model.fit_generator(
             Logger(checkdir),
             #LearningRateDecay()
         ], 
-        validation_data=generate_data(val_images, val_regions, 32), 
-        validation_steps=int((len(val_images) // batch_size)/4), 
+        validation_data=generate_data(val_images, val_regions, batch_size), 
+        validation_steps=int((len(val_images) / float(batch_size))//4), 
         class_weight=None,
         max_queue_size=1, 
         workers=1, 
