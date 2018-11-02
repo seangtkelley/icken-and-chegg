@@ -18,20 +18,36 @@ from ssd_data import InputGenerator
 from ssd_training import Logger
 from tbpp_training import TBPPFocalLoss
 
-train_annots_path = ""
-val_annots_path = ""
-output_path = os.path.join(home_dir, 'sean', 'output')
+train_annots_path = os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
+output_dir = os.path.join(home_dir, 'sean', 'output')
 
-def read_annots(annots_path):
+train_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'train_files.txt')
+val_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'val_files.txt')
+with open(train_split_file) as f:
+    train_filenames = [line.replace("\n", "") for line in f.readlines()]
+
+with open(val_split_file) as f:
+    val_filenames = [line.replace("\n", "") for line in f.readlines()]
+
+def read_annots(annots_path, filenames):
     annots = open(annots_path, "r").readlines()
     image_paths = []
     regions = []
+
+    temp_path = None
+    temp_regions = []
     for line in annots:
         if line.endswith(".tiff\n"):
-            if len(temp_regions) > 0:
-                regions.append(temp_regions)
+            if temp_path != None:
+                filename = temp_path.split()[0].split('/')[-1]
+                head, _, _ = filename.partition('.')
+                name = head.split("_")[0]
+
+                if len(temp_regions) > 0 and name in filenames:
+                    image_paths.append(temp_path)
+                    regions.append(temp_regions)
             
-            image_paths.append(line)
+            temp_path = line
             temp_regions = []
             
         elif len(line.split(" ")) == 4:
@@ -94,8 +110,8 @@ experiment = 'dsodtbpp512fl_maps'
 
 prior_util = PriorUtil(model)
 
-train_images, train_regions = read_annots(train_annots_path)
-val_images, val_regions = read_annots(val_annots_path)
+train_images, train_regions = read_annots(train_annots_path, train_filenames)
+val_images, val_regions = read_annots(train_annots_path, val_filenames)
 
 epochs = 100
 initial_epoch = 0
@@ -103,7 +119,7 @@ initial_epoch = 0
 for layer in model.layers:
     layer.trainable = not layer.name in freeze
 
-checkdir = os.path.join(output_path, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
+checkdir = os.path.join(output_dir, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
 if not os.path.exists(checkdir):
     os.makedirs(checkdir)
 
