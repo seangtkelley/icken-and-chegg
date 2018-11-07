@@ -62,7 +62,7 @@ def read_annots(annots_path, filenames):
 
     return image_paths, regions
 
-def generate_data(image_paths, regions, batch_size):
+def generate_data(image_paths, regions, batch_size, encode=False):
     h, w = (512, 512)
     mean = np.array([104,117,123])
     num_batches = len(image_paths) // batch_size
@@ -97,9 +97,9 @@ def generate_data(image_paths, regions, batch_size):
             
             #if len(targets) == batch_size or j == len(idxs)-1: # last batch in epoch can be smaller then batch_size
             if len(targets) == batch_size:
-                targets = [prior_util.encode(y) for y in targets]
-                targets = np.array(targets, dtype=np.float32)
-
+                if encode:
+                    targets = [prior_util.encode(y) for y in targets]
+                    targets = np.array(targets, dtype=np.float32)
                 tmp_inputs = np.array(inputs, dtype=np.float32)
                 tmp_targets = targets
                 inputs, targets = [], []
