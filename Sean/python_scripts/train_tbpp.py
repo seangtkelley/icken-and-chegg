@@ -76,12 +76,12 @@ def generate_data(image_paths, regions, batch_size):
         for j, i in enumerate(idxs):
             img = cv2.imread(image_paths[i])
 
-            boxes = np.zeros(shape=(4, len(regions[i])))
+            boxes = np.zeros(shape=(len(regions[i]), 4))
             i = 0
             for box in regions[i]:
                 xmin, ymin, width, height = box
                 xmax, ymax = xmin+width, ymin+height 
-                boxes[:, i] = np.array([xmin/w, ymin/h, xmax/w, ymax/h]).T
+                boxes[i, :] = np.array([xmin/w, ymin/h, xmax/w, ymax/h])
                 i += 1
 
             boxes = np.concatenate([boxes, np.ones([boxes.shape[0],1])], axis=1)
