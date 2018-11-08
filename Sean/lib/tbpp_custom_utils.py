@@ -4,8 +4,7 @@ import cv2
 import numpy as np
 
 home_dir = os.path.expanduser("~")
-#ssd_detectors_dir = os.path.join(home_dir, 'sean', 'ssd_detectors')
-ssd_detectors_dir = os.path.join(home_dir, 'Documents', 'indystudy', 'ssd_detectors')
+ssd_detectors_dir = os.path.join(home_dir, 'sean', 'ssd_detectors')
 
 sys.path.append(ssd_detectors_dir)
 
