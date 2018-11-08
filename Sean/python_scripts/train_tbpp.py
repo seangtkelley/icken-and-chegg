@@ -52,7 +52,7 @@ with open(val_split_file) as f:
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
 freeze = []
-batch_size = 32
+batch_size = 4
 experiment = 'dsodtbpp512fl_maps'
 
 prior_util = PriorUtil(model)

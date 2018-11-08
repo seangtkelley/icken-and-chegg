@@ -35,7 +35,6 @@ test_only = True
 test_filenames = []
 if test_only:
     test_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'test_files.txt')
-    #test_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'test_files.txt')
 
     with open(test_split_file) as f:
         test_filenames = [line.replace("\n", "") for line in f.readlines()]
