@@ -14,27 +14,45 @@ from utils.model_utils import load_weights, calc_memory_usage
 from ssd_data import preprocess
 from tbpp_utils import PriorUtil
 
+checkpoint_dir = os.path.join(home_dir, 'sean', 'output', 'tbpp', 'checkpoints', '201811081417_dsodtbpp512fl_maps')
+
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
-weights_path = os.path.join(ssd_detectors_dir, 'checkpoints', '201807091503_dsodtbpp512fl_synthtext', 'weights.018.h5')
+weights_path = os.path.join(checkpoint_dir, 'weights.017.h5')
 confidence_threshold = 0.35
 plot_name = 'dsodtbpp512fl_sythtext'
 
 load_weights(model, weights_path)
-checkdir = os.path.dirname(weights_path)
 
 prior_util = PriorUtil(model)
 
 map_images_dir = os.path.join(home_dir, 'data', 'maps')
 do_preprocess = True
-preds_output_path = os.path.join(home_dir, 'sean', 'output', 'map_trained_tbpp_preds.txt')
+preds_output_path = os.path.join(home_dir, 'sean', 'output', 'tbpp', 'map_trained_tbpp_preds.txt')
 preds_output_file = open(preds_output_path, "w+")
+
+test_only = True
+test_filenames = []
+if test_only:
+    test_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'test_files.txt')
+    #test_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'test_files.txt')
+
+    with open(test_split_file) as f:
+        test_filenames = [line.replace("\n", "") for line in f.readlines()]
 
 crop_h = 512
 crop_w = 512
 step = 400
 
 for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
+    if test_only:
+        filename = filepath.split('/')[-1]
+        head, _, _ = filename.partition('.')
+        name = head.split("_")[0]
+
+        if name not in test_filenames:
+            continue
+
     image = cv2.imread(filepath)
     height = image.shape[0]; width = image.shape[1]
     current_x = 0; current_y = 0
