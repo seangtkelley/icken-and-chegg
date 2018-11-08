@@ -1,10 +1,12 @@
-import numpy as np
-import keras
 import time
 import os
 import sys
 import pickle
 import cv2
+
+import numpy as np
+import tensorflow as tf
+import keras
 
 home_dir = os.path.expanduser("~")
 
@@ -21,11 +23,15 @@ from ssd_data import InputGenerator
 from ssd_training import Logger
 from tbpp_training import TBPPFocalLoss
 
-train_annots_path = os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
-output_dir = os.path.join(home_dir, 'sean', 'output')
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+sess = tf.Session(config=config)
+keras.backend.tensorflow_backend.set_session(sess)
 
 train_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'train_files.txt')
 val_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'val_files.txt')
+train_annots_path = os.path.join(home_dir, 'Documents', 'indystudy', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
+output_dir = os.path.join(home_dir, 'Documents', 'indystudy', 'output')
 train_filenames = []
 val_filenames = []
 with open(train_split_file) as f:
