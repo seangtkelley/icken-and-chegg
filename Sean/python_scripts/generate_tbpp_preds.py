@@ -18,7 +18,7 @@ checkpoint_dir = os.path.join(home_dir, 'sean', 'output', 'tbpp', 'checkpoints',
 
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
-weights_path = os.path.join(checkpoint_dir, 'weights.017.h5')
+weights_path = os.path.join(checkpoint_dir, 'weights.048.h5')
 confidence_threshold = 0.35
 plot_name = 'dsodtbpp512fl_sythtext'
 
