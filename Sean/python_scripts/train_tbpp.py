@@ -28,10 +28,18 @@ config.gpu_options.allow_growth = True  # dynamically grow the memory used on th
 sess = tf.Session(config=config)
 keras.backend.tensorflow_backend.set_session(sess)
 
+train_annots_path = os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
+output_dir = os.path.join(home_dir, 'sean', 'output')
+
+#train_annots_path = os.path.join(home_dir, 'Documents', 'indystudy', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
+#output_dir = os.path.join(home_dir, 'Documents', 'indystudy', 'output')
+
 train_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'train_files.txt')
 val_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'val_files.txt')
-train_annots_path = os.path.join(home_dir, 'Documents', 'indystudy', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
-output_dir = os.path.join(home_dir, 'Documents', 'indystudy', 'output')
+
+#train_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'train_files.txt')
+#val_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'val_files.txt')
+
 train_filenames = []
 val_filenames = []
 with open(train_split_file) as f:
