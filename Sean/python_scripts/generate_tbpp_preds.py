@@ -18,7 +18,8 @@ from utils.model_utils import load_weights, calc_memory_usage
 from ssd_data import preprocess
 from tbpp_utils import PriorUtil
 
-checkpoint_dir = os.path.join(home_dir, 'sean', 'output', 'tbpp', 'checkpoints', '201811081417_dsodtbpp512fl_maps')
+output_dir = os.path.join(os.sep+'mnt', 'nfs', 'work1', 'elm', 'sgkelley', 'sean', 'output')
+checkpoint_dir = os.path.join(output_dir, 'tbpp', 'checkpoints', '201811101211_dsodtbpp512fl_maps')
 
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
@@ -32,10 +33,10 @@ prior_util = PriorUtil(model)
 
 do_preprocess = False # custom model trained on normal images
 
-preds_output_path = os.path.join(home_dir, 'sean', 'output', 'tbpp', 'map_trained_tbpp_angle_preds.txt')
+preds_output_path = os.path.join(output_dir, 'tbpp', 'map_trained_tbpp_angle_preds.txt')
 preds_output_file = open(preds_output_path, "w+")
 
-annots_path = os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
+annots_path = os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations_angles_-90to90step5.txt')
 
 test_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'test_files.txt')
 test_filenames = []
@@ -48,10 +49,7 @@ filename_cache = ""
 
 for i, filepath in enumerate(test_images):
 
-    image = cv2.imread(filepath)
     split_imgname = filepath.split('/')[-1].split(".")[0].split("_")
-    angle = int(split_imgname[1])
-
     dimen_split = split_imgname[2].split('x')
     current_x = int(dimen_split[0])
     current_y = int(dimen_split[1])
@@ -63,9 +61,9 @@ for i, filepath in enumerate(test_images):
         angle = split_imgname[1]
 
         # only write filename if is completely new image
-        if filename_cache == "" or filename_cache != split_imgname[0]+'.tiff':
+        if filename_cache == "" or filename_cache != split_imgname[0]:
             preds_output_file.write(split_imgname[0] + ".tiff" + "\n")
-            filename_cache = split_imgname[0]+'.tiff'
+            filename_cache = split_imgname[0]
 
         preds_output_file.write("angle " + angle + "\n")
         preds_output_file.write(str(len(preds)) + "\n")
@@ -73,6 +71,8 @@ for i, filepath in enumerate(test_images):
         preds_output_file.write("\n")
 
         preds = []
+
+    image = cv2.imread(filepath)
     
     model_output = model.predict(np.array([image]), batch_size=1, verbose=1)
             
@@ -83,7 +83,7 @@ for i, filepath in enumerate(test_images):
         
     for j in range(len(bboxes)): # xmin, ymin, xmax, ymax
         # scale bbox
-        bbox = bboxes[j]*512
+        bbox = bboxes[j]*512 # windows were 512x512
         
         # translate points
         crop_x_min = bbox[0] + current_x
