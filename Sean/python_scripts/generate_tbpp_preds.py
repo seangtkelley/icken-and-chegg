@@ -46,6 +46,7 @@ with open(test_split_file) as f:
 test_images, test_regions = tbpp_custom_utils.read_generated_annots(annots_path, test_filenames)
 
 filename_cache = ""
+preds = []
 
 for i, filepath in enumerate(test_images):
 
@@ -96,5 +97,20 @@ for i, filepath in enumerate(test_images):
         h = crop_y_max - crop_y_min
 
         preds.append( (crop_x_min, crop_y_min, w, h) )
+
+if len(preds)>0:
+    # get previous filename
+    filename = test_images[i-1].split('/')[-1]
+    split_imgname = filename.split(".")[0].split("_")
+    angle = split_imgname[1]
+
+    # only write filename if is completely new image
+    if filename_cache == "" or filename_cache != split_imgname[0]:
+        preds_output_file.write(split_imgname[0] + ".tiff" + "\n")
+        filename_cache = split_imgname[0]
+
+    preds_output_file.write("angle " + angle + "\n")
+    preds_output_file.write(str(len(preds)) + "\n")
+    preds_output_file.write( "\n".join( [" ".join(map(str, bbox)) for bbox in preds] ))
     
 preds_output_file.close()
