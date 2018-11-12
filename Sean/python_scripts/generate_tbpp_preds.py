@@ -66,6 +66,7 @@ for i, filepath in enumerate(test_images):
             preds_output_file.write(split_imgname[0] + ".tiff" + "\n")
             filename_cache = split_imgname[0]
 
+        print('Writing', len(preds), 'predictions for', filename_cache, 'at angle', angle)
         preds_output_file.write("angle " + angle + "\n")
         preds_output_file.write(str(len(preds)) + "\n")
         preds_output_file.write( "\n".join( [" ".join(map(str, bbox)) for bbox in preds] ))
@@ -73,6 +74,8 @@ for i, filepath in enumerate(test_images):
 
         preds = []
 
+    print('Reading Image:', filepath)
+    print('Current X:', str(current_x), 'Current Y:', str(current_y))
     image = cv2.imread(filepath)
     
     model_output = model.predict(np.array([image]), batch_size=1, verbose=1)
@@ -82,6 +85,7 @@ for i, filepath in enumerate(test_images):
     quades = res[:,4:12]
     rboxes = res[:,12:17]
         
+    print('Found', str(len(bboxes)), 'boxes')
     for j in range(len(bboxes)): # xmin, ymin, xmax, ymax
         # scale bbox
         bbox = bboxes[j]*512 # windows were 512x512
