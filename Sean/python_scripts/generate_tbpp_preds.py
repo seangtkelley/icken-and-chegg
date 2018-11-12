@@ -100,7 +100,7 @@ for i, filepath in enumerate(test_images):
 
 if len(preds)>0:
     # get previous filename
-    filename = test_images[i-1].split('/')[-1]
+    filename = test_images[-1].split('/')[-1]
     split_imgname = filename.split(".")[0].split("_")
     angle = split_imgname[1]
 
