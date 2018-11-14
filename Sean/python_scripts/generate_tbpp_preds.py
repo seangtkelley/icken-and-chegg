@@ -17,13 +17,13 @@ from tbpp_utils import PriorUtil
 sys.path.append(os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'evaluation'))
 from util import rotate_image, adjust_image_size
 
-output_dir = os.path.join(os.sep+'mnt', 'nfs', 'work1', 'elm', 'sgkelley', 'output')
+output_dir = os.path.join(os.sep+'mnt', 'nfs', 'work1', 'elm', 'sgkelley', 'sean', 'output')
 
 checkpoint_dir = os.path.join(output_dir, 'tbpp', 'checkpoints', '201811081417_dsodtbpp512fl_maps')
 
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
-weights_path = os.path.join(checkpoint_dir, 'weights.048.h5')
+weights_path = os.path.join(checkpoint_dir, 'weights.018.h5')
 confidence_threshold = 0.35
 plot_name = 'dsodtbpp512fl_sythtext'
 
