@@ -100,7 +100,7 @@ for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
                     w = crop_x_max - crop_x_min
                     h = crop_y_max - crop_y_min
 
-                    preds.append( (crop_x_min, crop_y_min, w, h) )
+                    preds.append( (crop_x_min, crop_y_max, w, h) )
                 
                 current_x += step
 
