@@ -14,7 +14,7 @@ from utils.model_utils import load_weights, calc_memory_usage
 from ssd_data import preprocess
 from tbpp_utils import PriorUtil
 
-sys.path.append(home_dir, 'sean', 'cascaded-faster-rcnn', "evaluation")
+sys.path.append(os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'evaluation'))
 from util import rotate_image, adjust_image_size
 
 output_dir = os.path.join(os.sep+'mnt', 'nfs', 'work1', 'elm', 'sgkelley', 'output')
