@@ -31,7 +31,7 @@ load_weights(model, weights_path)
 
 prior_util = PriorUtil(model)
 
-map_images_dir = os.path.join(output_dir, 'data', 'maps')
+map_images_dir = os.path.join(os.sep+'mnt', 'nfs', 'work1', 'elm', 'sgkelley', 'data', 'maps')
 do_preprocess = False
 preds_output_path = os.path.join(output_dir, 'tbpp', 'map_trained_angles_tbpp_preds.txt')
 preds_output_file = open(preds_output_path, "w+")
