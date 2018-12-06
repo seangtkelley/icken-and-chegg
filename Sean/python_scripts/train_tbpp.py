@@ -88,8 +88,8 @@ loss = TBPPFocalLoss()
 model.compile(optimizer=optim, loss=loss.compute, metrics=loss.metrics)
 
 history = model.fit_generator(
-        tbpp_custom_utils.generate_data(train_images, train_regions, batch_size, prior_util),
-        steps_per_epoch=int((len(train_images) / float(batch_size))//4), 
+        tbpp_custom_utils.tbpp_generate_data(train_images, train_regions, batch_size, prior_util),
+        steps_per_epoch=int((len(train_images) / float(batch_size))), 
         epochs=epochs, 
         verbose=1, 
         callbacks=[
@@ -97,8 +97,8 @@ history = model.fit_generator(
             Logger(checkdir),
             #LearningRateDecay()
         ], 
-        validation_data=tbpp_custom_utils.generate_data(val_images, val_regions, batch_size, prior_util), 
-        validation_steps=int((len(val_images) / float(batch_size))//4), 
+        validation_data=tbpp_custom_utils.tbpp_generate_data(val_images, val_regions, batch_size, prior_util), 
+        validation_steps=int((len(val_images) / float(batch_size))), 
         class_weight=None,
         max_queue_size=1, 
         workers=1, 

@@ -17,9 +17,9 @@ ssd_detectors_dir = os.path.join(home_dir, 'sean', 'ssd_detectors')
 sys.path.append(ssd_detectors_dir)
 
 from utils.model_utils import load_weights
-from tbpp_model import TB300
-from tbpp_utils import PriorUtil
-from ssd_data import InputGenerator
+from tb_model import TB300
+from ssd_utils import PriorUtil
+from ssd_utils import load_weights
 from tbpp_training import SSDLoss, LearningRateDecay, Logger
 
 config = tf.ConfigProto()
@@ -57,7 +57,7 @@ model = TB300()
 
 prior_util = PriorUtil(model)
 
-weights_path = '~/.keras/models/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+weights_path = os.path.join(home_dir, 'data', 'vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5')
 layer_list = [('block1_conv1', 'conv1_1'),
               ('block1_conv2', 'conv1_2'),
               ('block2_conv1', 'conv2_1'),
@@ -86,7 +86,7 @@ for layer in model.layers:
 experiment = 'tb300_maps'
 
 epochs = 100
-batch_size = 32
+batch_size = 16
 initial_epoch = 0
 
 checkdir = os.path.join(output_dir, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
@@ -107,7 +107,7 @@ loss = SSDLoss(alpha=1.0, neg_pos_ratio=3.0)
 model.compile(optimizer=optim, loss=loss.compute, metrics=loss.metrics)
 
 history = model.fit_generator(
-        tbpp_custom_utils.generate_data(train_images, train_regions, batch_size, prior_util),
+        tbpp_custom_utils.tb_generate_data(train_images, train_regions, batch_size, prior_util),
         steps_per_epoch=int((len(train_images) / float(batch_size))), 
         epochs=epochs, 
         verbose=1, 
@@ -117,7 +117,7 @@ history = model.fit_generator(
             # learning rate decay usesd with sgd
             # LearningRateDecay(methode='linear', base_lr=1e-3, n_desired=40000, desired=0.1, bias=0.0, minimum=0.1)
         ], 
-        validation_data=tbpp_custom_utils.generate_data(val_images, val_regions, batch_size, prior_util), 
+        validation_data=tbpp_custom_utils.tb_generate_data(val_images, val_regions, batch_size, prior_util), 
         validation_steps=int((len(val_images) / float(batch_size))), 
         class_weight=None,
         max_queue_size=1, 
