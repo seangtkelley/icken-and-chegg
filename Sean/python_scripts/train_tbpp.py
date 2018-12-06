@@ -40,6 +40,7 @@ val_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'val_files.txt')
 #train_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'train_files.txt')
 #val_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'val_files.txt')
 
+experiment = 'tbpp512fl_maps'
 checkdir = os.path.join(output_dir, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
 if not os.path.exists(checkdir):
     os.makedirs(checkdir)
@@ -69,7 +70,6 @@ freeze = ['conv1_1', 'conv1_2',
           #'conv5_1', 'conv5_2', 'conv5_3',
          ]
 batch_size = 16
-experiment = 'tbpp512fl_maps'
 
 prior_util = PriorUtil(model)
 
