@@ -40,6 +40,10 @@ val_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'val_files.txt')
 #train_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'train_files.txt')
 #val_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'val_files.txt')
 
+checkdir = os.path.join(output_dir, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
+if not os.path.exists(checkdir):
+    os.makedirs(checkdir)
+
 train_filenames = []
 val_filenames = []
 with open(train_split_file) as f:
@@ -50,12 +54,30 @@ with open(val_split_file) as f:
 
 
 # TextBoxes++ + DenseNet
-model = TBPP512_dense(softmax=False)
-freeze = []
-batch_size = 8
-experiment = 'dsodtbpp512fl_maps'
+# model = TBPP512_dense(softmax=False)
+# freeze = []
+# batch_size = 8
+# experiment = 'dsodtbpp512fl_maps'
+
+# TextBoxes++
+model = TBPP512(softmax=False)
+weights_path = os.path.join(home_dir, 'data', 'ssd512_voc_weights_fixed.hdf5')
+freeze = ['conv1_1', 'conv1_2',
+          'conv2_1', 'conv2_2',
+          'conv3_1', 'conv3_2', 'conv3_3',
+          #'conv4_1', 'conv4_2', 'conv4_3',
+          #'conv5_1', 'conv5_2', 'conv5_3',
+         ]
+batch_size = 16
+experiment = 'tbpp512fl_maps'
 
 prior_util = PriorUtil(model)
+
+if weights_path is not None:
+    load_weights(model, weights_path)
+
+for layer in model.layers:
+    layer.trainable = not layer.name in freeze
 
 train_images, train_regions = tbpp_custom_utils.read_generated_annots(train_annots_path, train_filenames)
 val_images, val_regions = tbpp_custom_utils.read_generated_annots(train_annots_path, val_filenames)
@@ -65,13 +87,6 @@ print('val image count:', len(val_images))
 
 epochs = 100
 initial_epoch = 0
-
-for layer in model.layers:
-    layer.trainable = not layer.name in freeze
-
-checkdir = os.path.join(output_dir, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
-if not os.path.exists(checkdir):
-    os.makedirs(checkdir)
 
 #optim = keras.optimizers.SGD(lr=1e-3, momentum=0.9, decay=0, nesterov=True)
 optim = keras.optimizers.Adam(lr=1e-3, beta_1=0.9, beta_2=0.999, epsilon=0.001, decay=0.0)

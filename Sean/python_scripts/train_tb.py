@@ -39,6 +39,10 @@ val_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'val_files.txt')
 #train_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'train_files.txt')
 #val_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'val_files.txt')
 
+checkdir = os.path.join(output_dir, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
+if not os.path.exists(checkdir):
+    os.makedirs(checkdir)
+
 train_filenames = []
 val_filenames = []
 with open(train_split_file) as f:
@@ -86,12 +90,8 @@ for layer in model.layers:
 experiment = 'tb300_maps'
 
 epochs = 100
-batch_size = 16
+batch_size = 8
 initial_epoch = 0
-
-checkdir = os.path.join(output_dir, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
-if not os.path.exists(checkdir):
-    os.makedirs(checkdir)
 
 #optim = keras.optimizers.SGD(lr=1e-3, momentum=0.9, decay=0, nesterov=True)
 optim = keras.optimizers.Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
