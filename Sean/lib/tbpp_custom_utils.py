@@ -62,8 +62,8 @@ def tbpp_generate_data(image_paths, regions, batch_size, prior_util, encode=True
                 boxes[k,:] = np.array([xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin])
                 k += 1
 
-            boxes[:,0::2] /= w
-            boxes[:,1::2] /= h
+            boxes[:,0::2] /= img.shape[1]
+            boxes[:,1::2] /= img.shape[0]
 
             # append classes
             boxes = np.concatenate([boxes, np.ones([boxes.shape[0],1])], axis=1)
@@ -95,7 +95,7 @@ def tbpp_generate_data(image_paths, regions, batch_size, prior_util, encode=True
     print('EXIT generator')
 
 def tb_generate_data(image_paths, regions, batch_size, prior_util, encode=True):
-    h, w = (512, 512)
+    h, w = (300, 300)
     mean = np.array([104,117,123])
     num_batches = len(image_paths) // batch_size
 
@@ -116,8 +116,8 @@ def tb_generate_data(image_paths, regions, batch_size, prior_util, encode=True):
                 boxes[k,:] = np.array([xmin, ymin, xmax, ymax])
                 k += 1
 
-            boxes[:,0::2] /= w
-            boxes[:,1::2] /= h
+            boxes[:,0::2] /= img.shape[1]
+            boxes[:,1::2] /= img.shape[0]
 
             # append classes
             boxes = np.concatenate([boxes, np.ones([boxes.shape[0],1])], axis=1)
