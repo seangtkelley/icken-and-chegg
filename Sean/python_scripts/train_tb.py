@@ -20,7 +20,7 @@ from utils.model_utils import load_weights
 from tb_model import TB300
 from ssd_utils import PriorUtil
 from ssd_utils import load_weights
-from tbpp_training import SSDLoss, LearningRateDecay, Logger
+from ssd_training import SSDLoss, LearningRateDecay, Logger
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
