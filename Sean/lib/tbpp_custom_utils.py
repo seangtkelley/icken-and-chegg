@@ -59,7 +59,7 @@ def generate_data(image_paths, regions, batch_size, prior_util, encode=True):
             for box in regions[k]:
                 xmin, ymax, width, height = box
                 xmax, ymin = xmin+width, ymax-height 
-                boxes[k,:] = np.array([xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax])
+                boxes[k,:] = np.array([xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin])
                 k += 1
 
             boxes[:,0::2] /= w
