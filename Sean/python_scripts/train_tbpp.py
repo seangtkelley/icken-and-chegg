@@ -28,7 +28,7 @@ config.gpu_options.allow_growth = True  # dynamically grow the memory used on th
 sess = tf.Session(config=config)
 keras.backend.tensorflow_backend.set_session(sess)
 
-train_annots_path = os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
+train_annots_path = os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations_angles_-90to90step5_fixed.txt')
 output_dir = os.path.join(home_dir, 'sean', 'output')
 
 #train_annots_path = os.path.join(home_dir, 'Documents', 'indystudy', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
