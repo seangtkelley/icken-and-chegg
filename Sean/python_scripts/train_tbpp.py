@@ -55,21 +55,22 @@ with open(val_split_file) as f:
 
 
 # TextBoxes++ + DenseNet
-# model = TBPP512_dense(softmax=False)
-# freeze = []
-# batch_size = 8
-# experiment = 'dsodtbpp512fl_maps'
+model = TBPP512_dense(softmax=False)
+weights_path = os.path.join(home_dir, 'data', 'weights.018.h5')
+freeze = []
+batch_size = 8
+experiment = 'dsodtbpp512fl_maps'
 
 # TextBoxes++
-model = TBPP512(softmax=False)
-weights_path = os.path.join(home_dir, 'data', 'ssd512_voc_weights_fixed.hdf5')
+# model = TBPP512(softmax=False)
+# weights_path = os.path.join(home_dir, 'data', 'ssd512_voc_weights_fixed.hdf5')
 freeze = ['conv1_1', 'conv1_2',
           'conv2_1', 'conv2_2',
           'conv3_1', 'conv3_2', 'conv3_3',
-          #'conv4_1', 'conv4_2', 'conv4_3',
-          #'conv5_1', 'conv5_2', 'conv5_3',
+          'conv4_1', 'conv4_2', 'conv4_3',
+          'conv5_1', 'conv5_2', 'conv5_3',
          ]
-batch_size = 16
+# batch_size = 16
 
 prior_util = PriorUtil(model)
 
