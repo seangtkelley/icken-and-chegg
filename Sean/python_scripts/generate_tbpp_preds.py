@@ -25,7 +25,6 @@ checkpoint_dir = os.path.join(output_dir, 'tbpp', 'checkpoints', '201811140855_d
 model = TBPP512_dense(softmax=False)
 weights_path = os.path.join(checkpoint_dir, 'weights.008.h5')
 confidence_threshold = 0.35
-plot_name = 'dsodtbpp512fl_sythtext'
 
 load_weights(model, weights_path)
 
