@@ -57,8 +57,8 @@ with open(val_split_file) as f:
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
 weights_path = os.path.join(home_dir, 'data', 'weights.018.h5')
-freeze = []
-batch_size = 8
+# freeze = []
+batch_size = 4
 experiment = 'dsodtbpp512fl_maps'
 
 # TextBoxes++
@@ -93,11 +93,11 @@ initial_epoch = 0
 optim = keras.optimizers.Adam(lr=1e-3, beta_1=0.9, beta_2=0.999, epsilon=0.001, decay=0.0)
 
 # weight decay
-regularizer = keras.regularizers.l2(5e-4) # None if disabled
-# regularizer = None
-for l in model.layers:
-    if l.__class__.__name__.startswith('Conv'):
-        l.kernel_regularizer = regularizer
+# regularizer = keras.regularizers.l2(5e-4) # None if disabled
+regularizer = None
+#for l in model.layers:
+#    if l.__class__.__name__.startswith('Conv'):
+#        l.kernel_regularizer = regularizer
 
 loss = TBPPFocalLoss()
 
