@@ -24,8 +24,10 @@ checkpoint_dir = os.path.join(home_dir, 'sean', 'ssd_detectors', 'checkpoints', 
 
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
+
 #weights_path = os.path.join(checkpoint_dir, 'weights.005.h5')
 weights_path = os.path.join(checkpoint_dir, 'weights.018.h5')
+#confidence_threshold = 0.5
 confidence_threshold = 0.8
 
 load_weights(model, weights_path)
