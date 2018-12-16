@@ -19,12 +19,16 @@ from util import rotate_image, adjust_image_size
 
 output_dir = os.path.join(home_dir, 'sean', 'output')
 
-checkpoint_dir = os.path.join(output_dir, 'tbpp', 'checkpoints', '201811140855_dsodtbpp512fl_maps')
+checkpoint_dir = os.path.join(home_dir, 'sean', 'ssd_detectors', 'checkpoints', '201807091503_dsodtbpp512fl_synthtext')
+#checkpoint_dir = os.path.join(home_dir, 'sean', 'output', 'tbpp', 'checkpoints', '201812142148_tbpp512fl_maps')
 
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
-weights_path = os.path.join(checkpoint_dir, 'weights.008.h5')
-confidence_threshold = 0.35
+
+#weights_path = os.path.join(checkpoint_dir, 'weights.005.h5')
+weights_path = os.path.join(checkpoint_dir, 'weights.018.h5')
+#confidence_threshold = 0.5
+confidence_threshold = 0.8
 
 load_weights(model, weights_path)
 
@@ -32,10 +36,12 @@ prior_util = PriorUtil(model)
 
 map_images_dir = os.path.join(home_dir, 'data', 'maps')
 do_preprocess = False
-preds_output_path = os.path.join(output_dir, 'tbpp', 'map_trained_angles_tbpp_preds.txt')
+
+#preds_output_path = os.path.join(output_dir, 'tbpp', 'map_trained_angles_tbpp_0.5_preds_all.txt')
+preds_output_path = os.path.join(output_dir, 'tbpp', 'synthtext_trained_tbpp_0.8_preds_all.txt')
 preds_output_file = open(preds_output_path, "w+")
 
-test_only = True
+test_only = False
 test_filenames = []
 if test_only:
     test_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'test_files.txt')
