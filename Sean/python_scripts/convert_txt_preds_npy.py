@@ -61,4 +61,4 @@ for key in predicted.keys():
         cnt = np.array([pt1, pt2, pt3, pt4])
         cnt1.append(cnt)
     
-    np.save(os.path.join(output_dir, key+'.npy'), cnt)
+    np.save(os.path.join(output_dir, key+'.npy'), cnt1)
