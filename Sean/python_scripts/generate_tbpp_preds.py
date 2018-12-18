@@ -20,9 +20,9 @@ sys.path.append(os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'evaluati
 from util import rotate_image, adjust_image_size
 
 parser = OptionParser()
-parser.add_option("-o", "--output_dir", help="output file", default="~/sean/output/tbpp/np_preds/")
-parser.add_option("-w", "--weights_file", help="file with model weights", default="~/sean/ssd_detectors/checkpoints/201807091503_dsodtbpp512fl_synthtext/weights.018.h5")
-parser.add_option("-i", "--images_dir", help="map images directory", default="~/data/maps")
+parser.add_option("-o", "--output_dir", help="output file", default="/home/sgkelley/sean/output/tbpp/np_preds/")
+parser.add_option("-w", "--weights_file", help="file with model weights", default="/home/sgkelley/sean/ssd_detectors/checkpoints/201807091503_dsodtbpp512fl_synthtext/weights.018.h5")
+parser.add_option("-i", "--images_dir", help="map images directory", default="/home/sgkelley/data/maps/")
 parser.add_option("-p", "--preprocess", help="whether or not to preform same preprocess as done in original implementations (background removal, etc...)", type=int, default=0)
 parser.add_option("-t", "--test_only", help="whether or not to only evaluate test images", type=int, default=0)
 parser.add_option("-s", "--test_split", help="file from torch_phoc with test split", default="")
