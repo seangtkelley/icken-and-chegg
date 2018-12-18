@@ -95,30 +95,12 @@ for i in range(len(images)):
         image_center = (image.shape[1] // 2, image.shape[0] // 2)
         rot_mat = cv2.getRotationMatrix2D(image_center, -1*angle, scale=1.0)
 
-        xmin = np.min(polygon[:, 0])
-        xmax = np.max(polygon[:, 0])
-        ymin = np.min(polygon[:, 1])
-        ymax = np.max(polygon[:, 1])
+        # add col for rotation
+        polygon = np.concatenate([polygon, np.ones([polygon.shape[0], 1])], axis=1)
 
-        pt1 = [int(xmin), int(ymin)]
-        pt2 = [int(xmax), int(ymin)]
-        pt3 = [int(xmax), int(ymax)]
-        pt4 = [int(xmin), int(ymax)]
+        transformed_points = rot_mat.dot(polygon.T).T
 
-        points = np.array([np.asarray([pt1[0], pt1[1], 1.0]),
-                    np.asarray([pt2[0], pt2[1], 1.0]),
-                    np.asarray([pt3[0], pt3[1], 1.0]),
-                    np.asarray([pt4[0], pt4[1], 1.0])
-                    ])
-
-        transformed_points = rot_mat.dot(points.T).T
-
-        pt1 = [int(transformed_points[0][0]), int(transformed_points[0][1])]
-        pt2 = [int(transformed_points[1][0]), int(transformed_points[1][1])]
-        pt3 = [int(transformed_points[2][0]), int(transformed_points[2][1])]
-        pt4 = [int(transformed_points[3][0]), int(transformed_points[3][1])]
-
-        cnt = np.array([pt1, pt2, pt3, pt4])
+        cnt = transformed_points[:, :2].astype(int)
         cv2.drawContours(image, [cnt], 0, (255, 0, 0), 5)
 
     cv2.imwrite(os.path.join(args.output_dir, images[i]), image)

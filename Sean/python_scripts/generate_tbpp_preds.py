@@ -97,20 +97,9 @@ for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
                     # convert rbox
                     polygon = rbox3_to_polygon(rboxes[j])*512
 
-                    # sort points
-                    xmin = np.min(polygon[:, 0])
-                    xmax = np.max(polygon[:, 0])
-                    ymin = np.min(polygon[:, 1])
-                    ymax = np.max(polygon[:, 1])
-
                     # translate to full image location
-                    xmin += current_x
-                    xmax += current_x
-                    ymin += current_y
-                    ymax += current_y
-
-                    # recreate polygon
-                    polygon = np.reshape([xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin], (-1,2))
+                    polygon[:, 0] += current_x
+                    polygon[:, 1] += current_y
 
                     # rotate to orientation when image is not rotated
                     image_center = (original_shape[1] // 2, original_shape[0] // 2)
@@ -122,12 +111,7 @@ for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
                     # rotate
                     transformed_points = rot_mat.dot(polygon.T).T
 
-                    pt1 = [int(transformed_points[0][0]), int(transformed_points[0][1])]
-                    pt2 = [int(transformed_points[1][0]), int(transformed_points[1][1])]
-                    pt3 = [int(transformed_points[2][0]), int(transformed_points[2][1])]
-                    pt4 = [int(transformed_points[3][0]), int(transformed_points[3][1])]
-
-                    preds.append( [pt1, pt2, pt3, pt4] )
+                    preds.append( transformed_points[:, :2].astype(int) )
                     confs.append( conf[j][0] )
 
                 current_x += step
