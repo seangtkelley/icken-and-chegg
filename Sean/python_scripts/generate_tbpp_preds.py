@@ -137,5 +137,5 @@ for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
         
         print("Found", str(len(rboxes)), "boxes for angle", str(angle))
 
-    np.save(os.path.join(output_dir, filename.split('.')[0]+'.npy'), preds)
-    np.save(os.path.join(output_dir, filename.split('.')[0]+'_scores.npy'), confs)
+    np.save(os.path.join(output_dir, filename+'.npy'), preds)
+    np.save(os.path.join(output_dir, filename+'_scores.npy'), confs)
