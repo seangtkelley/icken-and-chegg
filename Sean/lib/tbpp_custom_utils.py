@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import glob
 
-home_dir = os.path.expanduser("~")
+home_dir = '/home/sgkelley/'
 
 ssd_detectors_dir = os.path.join(home_dir, 'sean', 'ssd_detectors')
 sys.path.append(ssd_detectors_dir)
