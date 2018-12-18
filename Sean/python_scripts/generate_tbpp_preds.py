@@ -38,7 +38,7 @@ do_preprocess = bool(options.preprocess)
 test_only = bool(options.test_only)
 test_split_file = options.test_split
 confidence_threshold = options.confidence
-rotate_image = bool(options.rotate)
+do_rotate_image = bool(options.rotate)
 
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
@@ -56,7 +56,7 @@ crop_h = 512
 crop_w = 512
 step = 400
 
-angles = [0] if rotate_image else range(-90, 95, 5)
+angles = [0] if do_rotate_image else range(-90, 95, 5)
 
 for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
     filename = filepath.split('/')[-1]
