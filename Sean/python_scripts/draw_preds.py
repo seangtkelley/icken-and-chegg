@@ -63,7 +63,7 @@ def read_npy_preds(annots_dir, filenames):
         if name not in filenames and len(filenames) != 0:
             continue
 
-        data = np.load(filename)
+        data = np.load(filepath)
 
         images.append(name+".tiff")
         regions.append(data)
