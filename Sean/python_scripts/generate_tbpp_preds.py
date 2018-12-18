@@ -56,7 +56,7 @@ crop_h = 512
 crop_w = 512
 step = 400
 
-angles = [0] if do_rotate_image else range(-90, 95, 5)
+angles = range(-90, 95, 5) if do_rotate_image else [0]
 
 for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
     filename = filepath.split('/')[-1]
@@ -91,7 +91,7 @@ for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
                 bboxes = res[:,0:4]
                 quades = res[:,4:12]
                 rboxes = res[:,12:17]
-                conf = res[:,17]
+                conf = res[:,17:]
 
                 for j in range(len(rboxes)):
                     # convert rbox
@@ -128,14 +128,14 @@ for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
                     pt4 = [int(transformed_points[3][0]), int(transformed_points[3][1])]
 
                     preds.append( [pt1, pt2, pt3, pt4] )
-                    conf.append( conf[j] )
+                    confs.append( conf[j][0] )
 
                 current_x += step
 
             current_x = 0
             current_y += step
         
-        print("Found", str(len(rbox3_to_polygon)), "boxes for angle", str(angle))
+        print("Found", str(len(rboxes)), "boxes for angle", str(angle))
 
     np.save(os.path.join(output_dir, filename.split('.')[0]+'.npy'), preds)
     np.save(os.path.join(output_dir, filename.split('.')[0]+'_scores.npy'), confs)
