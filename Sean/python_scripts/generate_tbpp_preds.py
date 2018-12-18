@@ -22,9 +22,10 @@ from util import rotate_image, adjust_image_size
 parser = OptionParser()
 parser.add_option("-o", "--output_dir", help="output file", default="~/sean/output/tbpp/np_preds/")
 parser.add_option("-w", "--weights_file", help="file with model weights", default="~/sean/ssd_detectors/checkpoints/201807091503_dsodtbpp512fl_synthtext/weights.018.h5")
-parser.add_option("-i", "--images_dir", help="map images directory", default="~/data/maps/")
+parser.add_option("-i", "--images_dir", help="map images directory", default="~/data/maps")
 parser.add_option("-p", "--preprocess", help="whether or not to preform same preprocess as done in original implementations (background removal, etc...)", type=int, default=0)
-parser.add_option("-t", "--test_split", help="file from torch_phoc with test split", default=None)
+parser.add_option("-r", "--test_only", help="whether or not to only evaluate test images", type=int, default=0)
+parser.add_option("-t", "--test_split", help="file from torch_phoc with test split", default="")
 parser.add_option("-m", "--confidence", help="confidence threshold for predictions", type=float, default=0.8)
 parser.add_option("-r", "--rotate", help="whether or not to rotate image", type=int, default=0)
 
@@ -34,6 +35,7 @@ weights_path = options.weights_file
 output_dir = options.output_dir
 map_images_dir = options.images_dir
 do_preprocess = bool(options.preprocess)
+test_only = bool(options.test_only)
 test_split_file = options.test_split
 confidence_threshold = options.confidence
 rotate_image = bool(options.rotate)
@@ -46,7 +48,7 @@ load_weights(model, weights_path)
 prior_util = PriorUtil(model)
 
 test_filenames = []
-if test_split_file:
+if test_only:
     with open(test_split_file) as f:
         test_filenames = [line.replace("\n", "") for line in f.readlines()]
 
@@ -59,7 +61,7 @@ angles = [0] if rotate_image else range(-90, 95, 5)
 for filepath in glob.glob(os.path.join(map_images_dir, 'D*')):
     filename = filepath.split('/')[-1]
 
-    if test_split_file:
+    if test_only:
         if filename.split('.')[0] not in test_filenames:
             continue
 
