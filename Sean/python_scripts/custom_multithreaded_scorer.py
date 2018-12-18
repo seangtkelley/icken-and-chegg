@@ -40,7 +40,7 @@ def get_results(filename):
 	# print _image
 
 	# grab the train and test annotations
-	trains = np.load(args.train_dir+_annots+_+_ext).item()
+	trains = np.load(os.path.join(args.train_dir, _annots+_+_ext)).item()
 	tests = np.load(filename)
 	#print filename, maps_dir+_image, args.train_dir+_annots+_+_ext
 
@@ -88,12 +88,12 @@ def get_results(filename):
 
 # MAIN PART
 # compute the IoUs
-for dir_name in glob.glob(args.test_dir+'*'):
+for dir_name in glob.glob(os.path.join(args.test_dir, '*')):
 	print(dir_name)
 	
 	# threading things
 	stats = []
-	list_of_files = glob.glob(dir_name+'/'+'*.tiff.npy')
+	list_of_files = glob.glob(os.path.join(dir_name, '*.tiff.npy'))
 	pool = ThreadPool(len(list_of_files))
 	stats = pool.map(get_results, list_of_files)
 
