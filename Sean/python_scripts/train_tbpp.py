@@ -3,12 +3,13 @@ import os
 import sys
 import pickle
 import cv2
+import argparse
 
 import numpy as np
 import tensorflow as tf
 import keras
 
-home_dir = os.path.expanduser("~")
+home_dir = '/home/sgkelley/'
 
 sys.path.append(os.path.join(home_dir, 'icken-and-chegg', 'Sean'))
 from lib import tbpp_custom_utils
@@ -28,60 +29,61 @@ config.gpu_options.allow_growth = True  # dynamically grow the memory used on th
 sess = tf.Session(config=config)
 keras.backend.tensorflow_backend.set_session(sess)
 
-train_annots_path = os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations_angles_-90to90step5_fixed.txt')
-output_dir = os.path.join(home_dir, 'sean', 'output')
+parser = argparse.ArgumentParser()
+parser.add_argument('--use_gen_annots', help='use generated annotations')
+parser.add_argument('--vgg', help='use vgg backend (default: densenet)')
+parser.add_argument('--annots_path', type=str, default=os.path.join(home_dir, 'data', 'annotations', 'current'), help='path to either annots folder or txt file')
+parser.add_argument('--map_images_dir', type=str, default=os.path.join(home_dir, 'data', 'maps'), help='dir where map images are')
+parser.add_argument('--output_dir', type=str, default=os.path.join(home_dir, 'sean', 'output'), help='dir to output checkpoints and logs')
+parser.add_argument('--train_split_file', type=str, default=os.path.join(home_dir, 'torch-phoc', 'splits', 'train_files.txt'), help='file from torch_phoc with train split')
+parser.add_argument('--val_split_file', type=str, default=os.path.join(home_dir, 'torch-phoc', 'splits', 'val_files.txt'), help='file from torch_phoc with val split')
+parser.add_argument('--weights_path', type=str, default=os.path.join(home_dir, 'data', 'weights.018.h5'), help='weights for transfer learning')
+parser.add_argument('--batch_size', type=int, default=4, help='batch size for training')
 
-#train_annots_path = os.path.join(home_dir, 'Documents', 'indystudy', 'cascaded-faster-rcnn', 'word-faster-rcnn', 'DataGeneration', 'fold_1', 'cropped_annotations.txt')
-#output_dir = os.path.join(home_dir, 'Documents', 'indystudy', 'output')
-
-train_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'train_files.txt')
-val_split_file = os.path.join(home_dir, 'torch-phoc', 'splits', 'val_files.txt')
-
-#train_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'train_files.txt')
-#val_split_file = os.path.join(home_dir, 'Documents', 'indystudy', 'torch-phoc', 'splits', 'val_files.txt')
-
-experiment = 'tbpp512fl_maps'
-checkdir = os.path.join(output_dir, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
-if not os.path.exists(checkdir):
-    os.makedirs(checkdir)
+args = parser.parse_args()
 
 train_filenames = []
 val_filenames = []
-with open(train_split_file) as f:
+with open(args.train_split_file) as f:
     train_filenames = [line.replace("\n", "") for line in f.readlines()]
 
-with open(val_split_file) as f:
+with open(args.val_split_file) as f:
     val_filenames = [line.replace("\n", "") for line in f.readlines()]
 
+if args.vgg:
+    # TextBoxes++
+    model = TBPP512(softmax=False)
+    freeze = ['conv1_1', 'conv1_2',
+            'conv2_1', 'conv2_2',
+            'conv3_1', 'conv3_2', 'conv3_3',
+            'conv4_1', 'conv4_2', 'conv4_3',
+            'conv5_1', 'conv5_2', 'conv5_3',
+            ]
+    experiment = 'vggtbpp512fl_maps'
+else:
+    # TextBoxes++ + DenseNet
+    model = TBPP512_dense(softmax=False)
+    freeze = []
+    experiment = 'dsodtbpp512fl_maps'
 
-# TextBoxes++ + DenseNet
-model = TBPP512_dense(softmax=False)
-weights_path = os.path.join(home_dir, 'data', 'weights.018.h5')
-freeze = []
-batch_size = 4
-experiment = 'dsodtbpp512fl_maps'
-
-# TextBoxes++
-# model = TBPP512(softmax=False)
-# weights_path = os.path.join(home_dir, 'data', 'ssd512_voc_weights_fixed.hdf5')
-# freeze = ['conv1_1', 'conv1_2',
-#           'conv2_1', 'conv2_2',
-#           'conv3_1', 'conv3_2', 'conv3_3',
-#           'conv4_1', 'conv4_2', 'conv4_3',
-#           'conv5_1', 'conv5_2', 'conv5_3',
-#          ]
-# batch_size = 16
+checkdir = os.path.join(args.output_dir, 'tbpp', 'checkpoints', time.strftime('%Y%m%d%H%M') + '_' + experiment)
+if not os.path.exists(checkdir):
+    os.makedirs(checkdir)
 
 prior_util = PriorUtil(model)
 
-if weights_path is not None:
-    load_weights(model, weights_path)
+if args.weights_path is not None:
+    load_weights(model, args.weights_path)
 
 for layer in model.layers:
     layer.trainable = not layer.name in freeze
 
-train_images, train_regions = tbpp_custom_utils.read_generated_annots(train_annots_path, train_filenames)
-val_images, val_regions = tbpp_custom_utils.read_generated_annots(train_annots_path, val_filenames)
+if args.use_gen_annots:
+    train_images, train_regions = tbpp_custom_utils.read_generated_annots(args.annots_path, train_filenames)
+    val_images, val_regions = tbpp_custom_utils.read_generated_annots(args.annots_path, val_filenames)
+else:
+    train_images, train_regions = tbpp_custom_utils.read_raw_annots(args.annots_path, train_filenames)
+    val_images, val_regions = tbpp_custom_utils.read_raw_annots(args.annots_path, val_filenames)
 
 print('train image count:', len(train_images))
 print('val image count:', len(val_images))
@@ -103,22 +105,43 @@ loss = TBPPFocalLoss()
 
 model.compile(optimizer=optim, loss=loss.compute, metrics=loss.metrics)
 
-history = model.fit_generator(
-        tbpp_custom_utils.tbpp_generate_data(train_images, train_regions, batch_size, prior_util),
-        steps_per_epoch=int((len(train_images) / float(batch_size))), 
-        epochs=epochs, 
-        verbose=1, 
-        callbacks=[
-            keras.callbacks.ModelCheckpoint(os.path.join(checkdir, 'weights.{epoch:03d}.h5'), verbose=1, save_weights_only=True),
-            Logger(checkdir),
-            #LearningRateDecay()
-        ], 
-        validation_data=tbpp_custom_utils.tbpp_generate_data(val_images, val_regions, batch_size, prior_util), 
-        validation_steps=int((len(val_images) / float(batch_size))), 
-        class_weight=None,
-        max_queue_size=1, 
-        workers=1, 
-        #use_multiprocessing=False, 
-        initial_epoch=initial_epoch, 
-        #pickle_safe=False, # will use threading instead of multiprocessing, which is lighter on memory use but slower
-        )
+if args.use_gen_annots:
+    history = model.fit_generator(
+            tbpp_custom_utils.tbpp_generate_data(train_images, train_regions, args.batch_size, prior_util),
+            steps_per_epoch=int((len(train_images) / float(args.batch_size))), 
+            epochs=epochs, 
+            verbose=1, 
+            callbacks=[
+                keras.callbacks.ModelCheckpoint(os.path.join(checkdir, 'weights.{epoch:03d}.h5'), verbose=1, save_weights_only=True),
+                Logger(checkdir),
+                #LearningRateDecay()
+            ], 
+            validation_data=tbpp_custom_utils.tbpp_generate_data(val_images, val_regions, args.batch_size, prior_util), 
+            validation_steps=int((len(val_images) / float(args.batch_size))), 
+            class_weight=None,
+            max_queue_size=1, 
+            workers=1, 
+            #use_multiprocessing=False, 
+            initial_epoch=initial_epoch, 
+            #pickle_safe=False, # will use threading instead of multiprocessing, which is lighter on memory use but slower
+            )
+else:
+    history = model.fit_generator(
+            tbpp_custom_utils.tbpp_raw_generate_data(args.map_images_dir, train_images, train_regions, args.batch_size, prior_util),
+            steps_per_epoch=int((len(train_images) / float(args.batch_size))), 
+            epochs=epochs, 
+            verbose=1, 
+            callbacks=[
+                keras.callbacks.ModelCheckpoint(os.path.join(checkdir, 'weights.{epoch:03d}.h5'), verbose=1, save_weights_only=True),
+                Logger(checkdir),
+                #LearningRateDecay()
+            ], 
+            validation_data=tbpp_custom_utils.tbpp_raw_generate_data(args.map_images_dir, val_images, val_regions, args.batch_size, prior_util), 
+            validation_steps=int((len(val_images) / float(args.batch_size))), 
+            class_weight=None,
+            max_queue_size=1, 
+            workers=1, 
+            #use_multiprocessing=False, 
+            initial_epoch=initial_epoch, 
+            #pickle_safe=False, # will use threading instead of multiprocessing, which is lighter on memory use but slower
+            )
