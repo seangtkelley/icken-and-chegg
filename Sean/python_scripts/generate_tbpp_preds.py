@@ -23,20 +23,20 @@ parser = OptionParser()
 parser.add_option("-o", "--output_dir", help="output file", default="~/sean/output/tbpp/np_preds/")
 parser.add_option("-w", "--weights_file", help="file with model weights", default="~/sean/ssd_detectors/checkpoints/201807091503_dsodtbpp512fl_synthtext/weights.018.h5")
 parser.add_option("-i", "--images_dir", help="map images directory", default="~/data/maps/")
-parser.add_option("-p", "--preprocess", help="whether or not to preform same preprocess as done in original implementations (background removal, etc...)", type=bool, default=False)
+parser.add_option("-p", "--preprocess", help="whether or not to preform same preprocess as done in original implementations (background removal, etc...)", type=int, default=0)
 parser.add_option("-t", "--test_split", help="file from torch_phoc with test split", default=None)
 parser.add_option("-m", "--confidence", help="confidence threshold for predictions", type=float, default=0.8)
-parser.add_option("-r", "--rotate", help="whether or not to rotate image", type=bool, default=False)
+parser.add_option("-r", "--rotate", help="whether or not to rotate image", type=int, default=0)
 
 (options, args) = parser.parse_args()
 
 weights_path = options.weights_file
 output_dir = options.output_dir
 map_images_dir = options.images_dir
-do_preprocess = options.preprocess
+do_preprocess = bool(options.preprocess)
 test_split_file = options.test_split
 confidence_threshold = options.confidence
-rotate_image = options.rotate
+rotate_image = bool(options.rotate)
 
 # TextBoxes++ + DenseNet
 model = TBPP512_dense(softmax=False)
