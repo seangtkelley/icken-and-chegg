@@ -27,15 +27,12 @@ sys.path.append(os.path.join(home_dir))
 from ..lib import general_utils
 from keras_yolo3.yolo import YOLO
 
-
 with open(args.test_annots_path) as f:
     lines = f.readlines()
 
 window_size = (args.input_size, args.input_size)
 
-
 detector = YOLO(**vars(args))
-
 
 false_negatives = 0
 false_positives = 0
