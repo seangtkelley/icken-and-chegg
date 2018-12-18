@@ -3,11 +3,11 @@ import sys
 import numpy as np
 import cv2
 import glob
-from optparse import OptionParser
+import argparse
 
-home_dir = os.path.expanduser("~")
+home_dir = '/home/sgkelley/'
+
 ssd_detectors_dir = os.path.join(home_dir, 'sean', 'ssd_detectors')
-
 sys.path.append(ssd_detectors_dir)
 
 from tbpp_model import TBPP512, TBPP512_dense
@@ -19,17 +19,17 @@ from utils.bboxes import rbox3_to_polygon
 sys.path.append(os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'evaluation'))
 from util import rotate_image, adjust_image_size
 
-parser = OptionParser()
-parser.add_option("-o", "--output_dir", help="output file", default="/home/sgkelley/sean/output/tbpp/np_preds/")
-parser.add_option("-w", "--weights_file", help="file with model weights", default="/home/sgkelley/sean/ssd_detectors/checkpoints/201807091503_dsodtbpp512fl_synthtext/weights.018.h5")
-parser.add_option("-i", "--images_dir", help="map images directory", default="/home/sgkelley/data/maps/")
-parser.add_option("-p", "--preprocess", help="whether or not to preform same preprocess as done in original implementations (background removal, etc...)", type=int, default=0)
-parser.add_option("-t", "--test_only", help="whether or not to only evaluate test images", type=int, default=0)
-parser.add_option("-s", "--test_split", help="file from torch_phoc with test split", default="")
-parser.add_option("-m", "--confidence", help="confidence threshold for predictions", type=float, default=0.8)
-parser.add_option("-r", "--rotate", help="whether or not to rotate image", type=int, default=0)
+parser = argparse.ArgumentParser()
+parser.add_argument("--output_dir", help="output dir", default=os.path.join(home_dir, 'sean', 'output', 'tbpp', 'np_preds'))
+parser.add_argument("--weights_file", help="file with model weights", default=os.path.join(home_dir, 'sean', 'ssd_detectors', 'checkpoints', '201807091503_dsodtbpp512fl_synthtext', 'weights.018.h5'))
+parser.add_argument("--images_dir", help="map images directory", default=os.path.join(home_dir, 'data', 'maps'))
+parser.add_argument("--preprocess", help="whether or not to preform same preprocess as done in original implementations (background removal, etc...)")
+parser.add_argument("--test_only", help="whether or not to only evaluate test images")
+parser.add_argument("--test_split", help="file from torch_phoc with test split", default=os.path.join(home_dir, 'torch-phoc', 'splits', 'test_files.txt'))
+parser.add_argument("--confidence", help="confidence threshold for predictions", type=float, default=0.8)
+parser.add_argument("--rotate", help="whether or not to rotate image")
 
-(options, args) = parser.parse_args()
+options = parser.parse_args()
 
 weights_path = options.weights_file
 output_dir = options.output_dir
