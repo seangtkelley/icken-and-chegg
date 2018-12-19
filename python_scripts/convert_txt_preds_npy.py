@@ -3,8 +3,7 @@ import os
 import numpy as np 
 import scipy.io as sio
 import sys
-
-from optparse import OptionParser
+import argparse
 
 home_dir = os.path.expanduser("~")
 sys.path.append(os.path.join(home_dir, 'Documents', 'indystudy', 'cascaded-faster-rcnn', 'evaluation'))
@@ -12,14 +11,14 @@ sys.path.append(os.path.join(home_dir, 'Documents', 'indystudy', 'cascaded-faste
 from util import retrieve_regions, vis_detections_pts, compute_union, compute_intersection
 from util import vis_detections_bbox, rotate_image, adjust_image_size, convert_bbox_format, filter_predictions
 
-parser = OptionParser()
-parser.add_option("-r", "--results", help="file with prediction results")
-parser.add_option("-d", "--dir_output", help="output directory", default="./")
-parser.add_option("-i", "--images_dir", help="images directory", default="./")
+parser = argparse.ArgumentParser()
+parser.add_argument("--results", help="file with prediction results")
+parser.add_argument("--dir_output", help="output directory", default="./")
+parser.add_argument("--images_dir", help="images directory", default="./")
 
 # ex: python icken-and-chegg/Sean/python_scripts/convert_txt_preds_npy.py -r ~/Documents/indystudy/data/output/synthtext_trained_maps_tbpp_0.8_preds.txt -d ~/Documents/indystudy/data/output/np_annots/ -i ~/Documents/indystudy/data/maps/
 
-(options, args) = parser.parse_args()
+options = parser.parse_args()
 
 prediction_file = options.results
 output_dir = options.dir_output
