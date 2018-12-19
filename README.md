@@ -21,6 +21,9 @@ The directory `python_scripts` contains all scripts for training, prediction, an
     - **--dir_output** output directory for .npy files
     - **--images_dir** directory with 31 maps
 - `custom_multithreaded_scorer`
+    - _notes_
+
+    Slightly modified version of original script from [here](https://github.com/LousyLory/cascaded-faster-rcnn/blob/master/evaluation/multithreaded_scorer.py).
     - _args_
     - **--train_dir** directory with all annotations .npy files
     - **--test_dir** directory with predictions .npy files
@@ -47,6 +50,9 @@ The directory `python_scripts` contains all scripts for training, prediction, an
     - **--confidence** confidence threshold for predictions
     - **--rotate** whether or not to rotate image
 - `train_tbpp`
+    - _notes_
+
+    Reading annotations directly from the .npy files is currently not working. The code seg faults while creating the crops for the input in the function `tbpp_raw_generate_data` located at line 72 of `lib/tbpp_custom_utils.py`. This could be fixed by either better controlling memory allocation for the arrays or modifying [DataGenerator.py](https://github.com/seangtkelley/cascaded-faster-rcnn/blob/master/word-faster-rcnn/DataGeneration/DataGenerator.py) to output arbitrary quadrilaterals instead of ones that are horizontally aligned.
     - _args_
     - **--use_gen_annots** use generated annotations
     - **--vgg** use vgg backend (default: densenet)
