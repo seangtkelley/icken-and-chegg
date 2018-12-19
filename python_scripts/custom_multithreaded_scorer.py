@@ -11,7 +11,7 @@ from shapely.strtree import STRtree
 from scipy.optimize import linear_sum_assignment as lsa
 import argparse
 
-home_dir = '/home/sgkelley/'
+home_dir = os.path.expanduser('~')
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--train_dir", help="output dir", default=os.path.join(home_dir, 'data', 'annotations', 'current'))

@@ -5,7 +5,7 @@ import numpy as np
 import glob
 import argparse
 
-home_dir = '/home/sgkelley/'
+home_dir = os.path.expanduser('~')
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--txt', help='read annots from txt file')

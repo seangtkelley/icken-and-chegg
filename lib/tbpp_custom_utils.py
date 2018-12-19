@@ -4,15 +4,17 @@ import cv2
 import numpy as np
 import glob
 
-home_dir = '/home/sgkelley/'
+home_dir = os.path.expanduser('~')
 
-ssd_detectors_dir = os.path.join(home_dir, 'sean', 'ssd_detectors')
+lib_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
+
+ssd_detectors_dir = os.path.join(lib_dir, 'sean', 'ssd_detectors')
 sys.path.append(ssd_detectors_dir)
 
 from tbpp_utils import PriorUtil
 from ssd_data import preprocess
 
-sys.path.append(os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'evaluation'))
+sys.path.append(os.path.join(lib_dir, 'sean', 'cascaded-faster-rcnn', 'evaluation'))
 
 from util import rotate_image, adjust_image_size
 

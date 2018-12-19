@@ -9,12 +9,14 @@ import numpy as np
 import tensorflow as tf
 import keras
 
-home_dir = '/home/sgkelley/'
+home_dir = os.path.expanduser('~')
 
-sys.path.append(os.path.join(home_dir, 'icken-and-chegg', 'Sean'))
+lib_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
+
+sys.path.append(os.path.join(lib_dir, 'icken-and-chegg', 'Sean'))
 from lib import tbpp_custom_utils
 
-ssd_detectors_dir = os.path.join(home_dir, 'sean', 'ssd_detectors')
+ssd_detectors_dir = os.path.join(lib_dir, 'sean', 'ssd_detectors')
 sys.path.append(ssd_detectors_dir)
 
 from utils.model_utils import load_weights

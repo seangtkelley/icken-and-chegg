@@ -5,9 +5,11 @@ import cv2
 import glob
 import argparse
 
-home_dir = '/home/sgkelley/'
+home_dir = home = os.path.expanduser("~")
 
-ssd_detectors_dir = os.path.join(home_dir, 'sean', 'ssd_detectors')
+lib_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
+
+ssd_detectors_dir = os.path.join(lib_dir, 'ssd_detectors')
 sys.path.append(ssd_detectors_dir)
 
 from tbpp_model import TBPP512, TBPP512_dense
@@ -16,7 +18,7 @@ from ssd_data import preprocess
 from tbpp_utils import PriorUtil
 from utils.bboxes import rbox3_to_polygon
 
-sys.path.append(os.path.join(home_dir, 'sean', 'cascaded-faster-rcnn', 'evaluation'))
+sys.path.append(os.path.join(lib_dir, 'cascaded-faster-rcnn', 'evaluation'))
 from util import rotate_image, adjust_image_size
 
 parser = argparse.ArgumentParser()
