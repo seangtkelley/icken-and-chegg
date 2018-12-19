@@ -1,0 +1,6 @@
+[submodule "lib/cascaded-faster-rcnn"]
+	path = lib/cascaded-faster-rcnn
+	url = https://github.com/seangtkelley/cascaded-faster-rcnn
+[submodule "lib/ssd_detectors"]
+	path = lib/ssd_detectors
+	url = https://github.com/mvoelk/ssd_detectors
