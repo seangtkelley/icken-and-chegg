@@ -1,6 +1,6 @@
 # Detection and recognition of texts in cartographic images
 
-### [More info here](https://people.cs.umass.edu/~ray/maps_project.html)
+This repository contains my work for the UMass Amherst research project whose project page can be [found here](https://people.cs.umass.edu/~ray/maps_project.html).
 
 ## Setup
 
