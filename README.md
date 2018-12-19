@@ -11,7 +11,10 @@ This repository uses [ssd_detectors](https://github.com/mvoelk/ssd_detectors) an
 
 ## Repository Structure
 
-The directory `python_scripts` contains all scripts for training, prediction, and evaluation of TextBoxes++ on the map imagery. The directory `sbatch_scripts` are the corresponding sbatch scripts for running on the Gypsum compute cluster. `lib` containings customing libs as well as the submodules. `notebooks` contains any jupyter notebooks for experimenting.
+- `lib`: custom libs as well as the submodules
+- `notebooks`: any jupyter notebooks for experimenting
+- `python_scripts`: all scripts for training, prediction, and evaluation of TextBoxes++ on the map imagery
+- `sbatch_scripts`: corresponding sbatch scripts for running on Gypsum compute cluster
 
 ## Script Details
 
