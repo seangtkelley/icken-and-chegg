@@ -20,7 +20,7 @@ This repository uses [ssd_detectors](https://github.com/mvoelk/ssd_detectors) an
 
 - `convery_txt_preds_npy`
     - _args_
-    - **--results file** with prediction results
+    - **--results** file with prediction results
     - **--dir_output** output directory for .npy files
     - **--images_dir** directory with 31 maps
 - `custom_multithreaded_scorer`
